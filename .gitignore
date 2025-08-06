@@ -1,0 +1,19 @@
+# Ignore log or temp files
+**/*.log
+**/app.log
+temp
+**/tmp
+
+# Ignore all bin files
+bin/isotcp
+
+# Ignore all debug files
+**/__debug*
+cmd/__debug*
+
+# Ignore all .env files
+**/.env
+.env
+
+# Ignore output .csv files
+output/*.csv

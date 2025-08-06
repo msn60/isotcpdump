@@ -1,0 +1,14 @@
+network:
+  fw_ip: "172.16.58.20"
+
+output:
+  packet_log_path: "output/packets.log"
+  is_need_packet_log: false
+  input_csv_path: "output/input.csv"
+  output_csv_path: "output/output.csv"
+  durations_csv: "output/durations.csv"
+
+limits:
+  max_records: 10000
+  max_packet_logs: 20
+
