@@ -1,5 +1,22 @@
+app:
+  version: "1.0.1"
+  name: "isotcp"
+
 network:
   fw_ip: "172.16.58.20"
+
+server:
+  - name: "fw"
+    ip: "172.16.58.20"
+    ports: [2020, 2021]
+    is_enable: true
+    is_default: true
+  - name: "sw"
+    ip: "172.16.58.19"
+    ports: [3020, 3021]
+    is_enable: true
+    is_default: false
+
 
 output:
   packet_log_path: "output/packets.log"
@@ -12,3 +29,22 @@ limits:
   max_records: 10000
   max_packet_logs: 20
 
+log: 
+  path: "logs"
+  level: "INFO"
+  rotation:
+    - type: "periodic"
+    - size: 102400 # size in KB
+    - count: 10
+    - interval: "hourly"
+
+crossnetwork:
+  net:
+    - src: "sipa"
+      dest: "fe1"
+      oid: "1.3.6.1.4.1.10.2.21"
+      index: 0
+    - src: "sipa"
+      dest: "fe2"
+      oid: "1.3.6.1.4.1.10.2.22"
+      index: 1

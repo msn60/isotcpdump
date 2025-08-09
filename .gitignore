@@ -17,3 +17,6 @@ cmd/__debug*
 
 # Ignore output .csv files
 output/*.csv
+
+# Ignore .env file
+.env

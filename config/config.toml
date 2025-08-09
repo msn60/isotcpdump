@@ -1,0 +1,51 @@
+[app]
+  version = "1.0.1"
+  name    = "isotcp"
+
+  [network]
+    fw_ip = "172.16.58.20"
+
+[[server]]
+  name       = "fw"
+  ip         = "172.16.58.20"
+  ports      = ["2020", "2021"]
+  is_enable  = true
+  is_default = true
+[[server]]
+  name       = "sw"
+  ip         = "172.16.58.19"
+  ports      = ["3020", "3"]
+  is_enable  = true
+  is_default = false
+
+[output]
+  packet_log_path   = "output/packets.log"
+  is_need_packet_log = false
+  input_csv_path    = "output/input.csv"
+  output_csv_path   = "output/output.csv"
+  durations_csv     = "output/durations.csv"
+
+[limits]
+  max_records     = 10000
+  max_packet_logs = 20
+
+[log]
+path  = "logs"
+level = "INFO"
+  [log.rotation]
+  type     = "periodic"
+  size     = 102400 # size in KB
+  count    = 10
+  interval = "hourly"
+
+[crossnetwork]
+  [[crossnetwork.net]]
+    src   = "test1"
+    dest  = "test2"
+    oid   = "1.5.7.1.5.1.20.3.210"
+    index = 0
+  [[crossnetwork.net]]
+    src   = "test3"
+    dest  = "test4"
+    oid   = "1.5.7.1.5.1.20.3.211"
+    index = 1
