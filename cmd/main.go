@@ -13,7 +13,7 @@ func main() {
 		log.Fatalf("config load error: %v", err)
 	}
 
-	app := config.NewApp(*cfg)
+	app := config.NewApp(cfg)
 	config.Print(cfg)
 	fmt.Println(app)
 

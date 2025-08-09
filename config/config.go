@@ -20,10 +20,10 @@ var (
 )
 
 type Application struct {
-	Cfg Config
+	Cfg *Config
 }
 
-func NewApp(cfg Config) *Application {
+func NewApp(cfg *Config) *Application {
 	return &Application{Cfg: cfg}
 }
 
@@ -104,8 +104,9 @@ func Load() (*Config, error) {
 	cfg.EnvVars = make(map[string]string, len(envs))
 	for k, v := range envs {
 		if k == "LIMIT_SIZE" {
-			iv, _ := strconv.Atoi(v)
-			cfg.Limits.LimitSize = iv
+			if iv, err := strconv.Atoi(v); err == nil {
+				cfg.Limits.LimitSize = iv
+			}
 			continue
 		}
 		cfg.EnvVars[k] = v
