@@ -30,14 +30,27 @@
   max_packet_logs = 20
 
 [log]
-path  = "logs"
-level = "INFO"
-  [log.rotation]
-  type     = "periodic"
-  size     = 102400 # size in KB
-  count    = 10
-  interval = "hourly"
-
+  test = "test data"
+  [log.metadata]
+    # service = "tcp"
+    level = "trace"
+    path = "logs/app.log"
+    apply_to_global = true
+  [log.console]
+    enable = true
+    pipe = true
+    fields_exclude = ["test"]
+  [[log.array_sample]]
+    type     = "type 3"
+    size     = 102400 # size in KB
+    count    = 10
+    interval = "hourly"
+  [[log.array_sample]]
+    type     = "type 4"
+    size     = 202400 # size in KB
+    count    = 20
+    interval = "weekly"  
+    
 [crossnetwork]
   [[crossnetwork.net]]
     src   = "test1"

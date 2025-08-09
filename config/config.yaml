@@ -1,6 +1,7 @@
 app:
   version: "1.0.1"
   name: "isotcp"
+  env: "development"
 
 network:
   fw_ip: "172.16.58.20"
@@ -30,13 +31,29 @@ limits:
   max_packet_logs: 20
 
 log: 
-  path: "logs"
-  level: "INFO"
+  test: "test data"
+  metadata:
+    # service: "tcp"
+    level: "trace"
+    path: "logs/app.log"
+    apply_to_global: true
+  console:
+    enable: true
+    pipe: true
+    fields_exclude: ["test"]
   rotation:
-    - type: "periodic"
-    - size: 102400 # size in KB
-    - count: 10
-    - interval: "hourly"
+    size: 1024000
+    interval: "daily"
+    count: 20
+  array_sample:
+    - type: "type 1"
+      size: 102400 # size in KB
+      count: 10
+      interval: "hourly"
+    - type: "type 2"
+      size: 202400 # size in KB
+      count: 20
+      interval: "weekly"
 
 crossnetwork:
   net:

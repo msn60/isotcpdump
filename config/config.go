@@ -13,6 +13,7 @@ import (
 	"github.com/knadh/koanf/parsers/yaml"
 	"github.com/knadh/koanf/providers/file"
 	"github.com/knadh/koanf/v2"
+	"github.com/rs/zerolog"
 )
 
 var (
@@ -20,11 +21,21 @@ var (
 )
 
 type Application struct {
-	Cfg *Config
+	Cfg     *Config
+	Clogger zerolog.Logger // console logger
+	Flogger zerolog.Logger // file logger
 }
 
 func NewApp(cfg *Config) *Application {
-	return &Application{Cfg: cfg}
+	return &Application{
+		Cfg: cfg,
+	}
+}
+
+func (a *Application) WithLogger(console, file zerolog.Logger) *Application {
+	a.Clogger = console
+	a.Flogger = file
+	return a
 }
 
 type Config struct {
@@ -70,12 +81,33 @@ type Limits struct {
 }
 
 type Log struct {
-	Path     string      `koanf:"path"`
-	Level    string      `koanf:"level"`
-	Rotation LogRotation `koanf:"rotation"`
+	Test        string           `koanf:"test"`
+	Metadata    LogMetadata      `koanf:"metadata"`
+	Console     LogConsole       `koanf:"console"`
+	Rotation    LogRotation      `koanf:"rotation"`
+	ArraySample []LogArraySample `koanf:"array_sample"`
+}
+
+type LogMetadata struct {
+	Service       string `koanf:"service"`
+	Path          string `koanf:"path"`
+	Level         string `koanf:"level"`
+	ApplyToGlobal bool   `koanf:"apply_to_global"`
+}
+
+type LogConsole struct {
+	Enable        bool     `koanf:"enable"`
+	Pipe          bool     `koanf:"pipe"`
+	FieldsExclude []string `koanf:"fields_exclude"`
 }
 
 type LogRotation struct {
+	Size     int    `koanf:"size"`
+	Interval string `koanf:"interval"`
+	Count    int    `koanf:"count"`
+}
+
+type LogArraySample struct {
 	Type     string `koanf:"type"`
 	Size     int    `koanf:"size"`
 	Count    int    `koanf:"count"`
@@ -134,10 +166,10 @@ func Load() (*Config, error) {
 	}
 
 	// if you need to normalize some structure
-	normalizeAllListOfSingletonMaps(k,
-		"log.rotation",
-		// add another configs which you need
-	)
+	// normalizeAllListOfSingletonMaps(k,
+	// 	"log.array_sample",
+	// 	// add another configs which you need
+	// )
 
 	if err := k.Unmarshal("", &cfg); err != nil {
 		return nil, fmt.Errorf("config: unmarshal: %w", err)

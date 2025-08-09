@@ -14,6 +14,9 @@ build:
 	go build -o $(BIN_DIR)/$(BINARY_NAME) $(SRC_DIR)/$(CMD_DIR)/main.go
 	@echo "✅ Built binary at $(BIN_DIR)/$(BINARY_NAME)"
 
+brun: clean build
+	@$(BIN_DIR)/$(BINARY_NAME)
+
 run: clean build
 	@$(BIN_DIR)/$(BINARY_NAME)
 
