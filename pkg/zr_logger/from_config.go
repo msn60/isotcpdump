@@ -74,7 +74,7 @@ func OptionsFromConfig(cfg *config.Config) *Options {
 		durUnit = time.Microsecond
 	case "s":
 		durUnit = time.Second
-	default: // "ms" یا خالی
+	default: // "ms"
 		durUnit = time.Millisecond
 	}
 

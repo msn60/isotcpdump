@@ -3,6 +3,7 @@ module github.com/msn60/isotcpdump
 go 1.24.3
 
 require (
+	github.com/google/gopacket v1.1.19
 	github.com/knadh/koanf v1.5.0
 	github.com/knadh/koanf/v2 v2.2.2
 	github.com/rs/zerolog v1.34.0

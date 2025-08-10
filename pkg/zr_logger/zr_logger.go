@@ -105,7 +105,7 @@ func SetLevel(l zerolog.Level) {
 	fileLogger = fileLogger.Level(l)
 }
 
-// --------- DI (غیر Singleton) ---------
+// --------- DI (without singleton) ---------
 
 // NewTargets: سه logger جدا (console/file/both) می‌دهد
 func NewTargets(opts *Options) (console zerolog.Logger, file zerolog.Logger, err error) {
@@ -113,7 +113,7 @@ func NewTargets(opts *Options) (console zerolog.Logger, file zerolog.Logger, err
 	return c, f, err
 }
 
-// --------- داخلی ---------
+// --------- Internal ---------
 
 func buildAll(in *Options) (consoleOnly, fileOnly zerolog.Logger, err error) {
 	o := populateOptions(in)
@@ -233,7 +233,7 @@ func buildConsoleWriter(o *Options) (io.Writer, error) {
 			Exclude:      setFromSlice(o.ConsoleFieldsExclude),
 		}, nil
 	}
-	// اگر Pipe نمی‌خوای، ConsoleWriter استاندارد با فرمت خود zerolog
+	//if you do not use pipe, you can use from zerolog default
 	cw := zerolog.ConsoleWriter{
 		Out:        os.Stdout,
 		TimeFormat: time.RFC3339,
@@ -290,7 +290,7 @@ type pipeConsoleWriter struct {
 func (w *pipeConsoleWriter) Write(p []byte) (int, error) {
 	var m map[string]any
 	if err := json.Unmarshal(p, &m); err != nil {
-		// اگر JSON نبود، خام چاپ کن
+
 		return w.Out.Write(p)
 	}
 	// time
@@ -300,8 +300,6 @@ func (w *pipeConsoleWriter) Write(p []byte) (int, error) {
 		case string:
 			ts = t
 		case float64:
-			// اگر unix ms/seconds بود
-			// اینجا ساده می‌گیریم: به رشته تبدیل کن
 			ts = fmt.Sprintf("%.0f", t)
 		default:
 			ts = fmt.Sprint(v)
@@ -323,7 +321,7 @@ func (w *pipeConsoleWriter) Write(p []byte) (int, error) {
 		msg = fmt.Sprint(v)
 		delete(m, w.MessageKey)
 	}
-	// باقی فیلدها → k=v
+
 	parts := make([]string, 0, len(m)+3)
 	if ts != "" {
 		parts = append(parts, ts)
@@ -334,7 +332,7 @@ func (w *pipeConsoleWriter) Write(p []byte) (int, error) {
 	if msg != "" {
 		parts = append(parts, msg)
 	}
-	// مرتب‌سازی اختیاری: برای سادگی، فقط عبور خطی
+
 	for k, v := range m {
 		if _, skip := w.Exclude[k]; skip {
 			continue
@@ -475,7 +473,7 @@ func populateOptions(in *Options) *Options {
 		*o = *in
 	}
 
-	// default‌ها
+	// default‌s
 	if o.Env == "" {
 		o.Env = getenv("APP_ENV", "development")
 	}
@@ -483,7 +481,6 @@ func populateOptions(in *Options) *Options {
 		o.FilePath = getenv("LOG_FILE_PATH", "logs/app.log")
 	}
 	if !o.ConsoleEnable && !o.FileEnable {
-		// اگر هیچ‌کدام تعیین نشد: dev → console، prod → file
 		if strings.ToLower(o.Env) == "development" {
 			o.ConsoleEnable = true
 			o.ConsolePipe = true
@@ -529,7 +526,7 @@ func populateOptions(in *Options) *Options {
 	if !o.ApplyToGlobal {
 		o.ApplyToGlobal = strings.EqualFold(getenv("LOG_APPLY_TO_GLOBAL", "true"), "true")
 	}
-	// ConsolePipe default در dev
+
 	if !o.ConsolePipe && strings.ToLower(o.Env) == "development" {
 		o.ConsolePipe = true
 	}
@@ -547,7 +544,7 @@ func atoi(s string) int {
 	return n
 }
 
-// allowAllSampler: همه‌ی لاگ‌ها رو اجازه میده (no-op)
+// allowAllSampler
 type allowAllSampler struct{}
 
 func (allowAllSampler) Sample(zerolog.Level) bool { return true }

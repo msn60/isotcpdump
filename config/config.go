@@ -50,8 +50,9 @@ type Config struct {
 }
 
 type App struct {
-	Version string `koanf:"version"`
-	Name    string `koanf:"name"`
+	Version  string `koanf:"version"`
+	Name     string `koanf:"name"`
+	PcapPath string `koanf:"pcap_path"`
 }
 
 type Network struct {
@@ -113,7 +114,7 @@ type LogFile struct {
 }
 
 type LogTime struct {
-	FieldFormat          string `koanf:"field_format"`        // "RFC3339Nano" یا layout
+	FieldFormat          string `koanf:"field_format"`        // "RFC3339Nano" or layout
 	DurationFieldUnit    string `koanf:"duration_field_unit"` // "ns|us|ms|s"
 	DurationFieldInteger bool   `koanf:"duration_field_integer"`
 }
