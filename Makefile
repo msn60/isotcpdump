@@ -20,7 +20,19 @@ brun: clean build
 run: clean build
 	@$(BIN_DIR)/$(BINARY_NAME)
 
+clear-log:
+	@mkdir -p logs
+	@> logs/app.log
+	@echo "✅ app.log is empty now"
+
+rm-app-logs:
+	@if ls -d logs/app-*/ 2>/dev/null; then \
+		rm -rf logs/app-*/; \
+		echo "✅ All app-* log folders removed."; \
+	else \
+		echo "ℹ️ No app-* log folders found in logs/"; \
+	fi
+
 debug:
 	go build -gcflags "all=-N -l" -o $(BIN_DIR)/$(BINARY_NAME)_debug $(SRC_DIR)/$(CMD_DIR)/main.go
-
 

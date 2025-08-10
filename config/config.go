@@ -84,13 +84,15 @@ type Log struct {
 	Test        string           `koanf:"test"`
 	Metadata    LogMetadata      `koanf:"metadata"`
 	Console     LogConsole       `koanf:"console"`
-	Rotation    LogRotation      `koanf:"rotation"`
+	File        LogFile          `koanf:"file"`
+	Time        LogTime          `koanf:"time"`
+	System      LogSystem        `koanf:"system"`
+	Sampler     LogSampler       `koanf:"sampler"`
 	ArraySample []LogArraySample `koanf:"array_sample"`
 }
 
 type LogMetadata struct {
 	Service       string `koanf:"service"`
-	Path          string `koanf:"path"`
 	Level         string `koanf:"level"`
 	ApplyToGlobal bool   `koanf:"apply_to_global"`
 }
@@ -101,10 +103,33 @@ type LogConsole struct {
 	FieldsExclude []string `koanf:"fields_exclude"`
 }
 
-type LogRotation struct {
-	Size     int    `koanf:"size"`
-	Interval string `koanf:"interval"`
-	Count    int    `koanf:"count"`
+type LogFile struct {
+	Enable     bool   `koanf:"file_enable"`
+	Path       string `koanf:"file_path"`
+	MaxSizeMB  int    `koanf:"file_max_size_mb"`
+	MaxBackups int    `koanf:"file_max_backups"`
+	MaxAgeDays int    `koanf:"file_max_age_days"`
+	Compress   bool   `koanf:"file_compress"`
+}
+
+type LogTime struct {
+	FieldFormat          string `koanf:"field_format"`        // "RFC3339Nano" یا layout
+	DurationFieldUnit    string `koanf:"duration_field_unit"` // "ns|us|ms|s"
+	DurationFieldInteger bool   `koanf:"duration_field_integer"`
+}
+
+type LogSystem struct {
+	EnableCaller  bool `koanf:"enable_caller"`
+	EnablePIDHost bool `koanf:"enable_pid_host"`
+}
+
+type LogSampler struct {
+	Enable      bool   `koanf:"enable"`
+	Burst       uint32 `koanf:"burst"`
+	BurstPeriod string `koanf:"burst_period"`
+	NextEveryN  uint32 `koanf:"next_every_n"`
+	BasicN      uint32 `koanf:"basic_n"`
+	Level       string `koanf:"level"`
 }
 
 type LogArraySample struct {

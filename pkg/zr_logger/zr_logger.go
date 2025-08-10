@@ -60,11 +60,12 @@ type Options struct {
 	EnablePIDHost bool
 
 	// Sampling
-	EnableSampling    bool
-	BasicSampleN      uint32
-	BurstSampleBurst  uint32
-	BurstSamplePeriod time.Duration
-	LevelSampling     *LevelSamplingOptions
+	EnableSampling     bool
+	SamplerBurst       uint32
+	SamplerBurstPeriod time.Duration
+	SamplerNextEveryN  uint32
+	SamplerBasicN      uint32
+	SamplingLevel      *LevelSamplingOptions
 
 	// Hooks
 	Hooks []zerolog.Hook
@@ -95,8 +96,8 @@ func Init(opts *Options) error {
 }
 
 // Get: logger default based on config
-func Console() zerolog.Logger { _ = Init(nil); return consoleLogger }
-func File() zerolog.Logger    { _ = Init(nil); return fileLogger }
+func Console() zerolog.Logger { return consoleLogger }
+func File() zerolog.Logger    { return fileLogger }
 
 func SetLevel(l zerolog.Level) {
 	zerolog.SetGlobalLevel(l)
@@ -199,8 +200,8 @@ func buildAll(in *Options) (consoleOnly, fileOnly zerolog.Logger, err error) {
 			l = l.With().Caller().Logger()
 		}
 		// sampling
-		if o.LevelSampling != nil {
-			l = l.Sample(buildLevelSampler(o.LevelSampling))
+		if o.SamplingLevel != nil {
+			l = l.Sample(buildLevelSampler(o.SamplingLevel))
 		} else if o.EnableSampling {
 			l = l.Sample(buildSampler(o))
 		}
@@ -361,19 +362,19 @@ func setFromSlice(ss []string) map[string]struct{} {
 // --------- helpers---------
 
 func buildSampler(o *Options) zerolog.Sampler {
-	if o.BurstSampleBurst > 0 && o.BurstSamplePeriod > 0 {
+	if o.SamplerBurst > 0 && o.SamplerBurstPeriod > 0 {
 		var next zerolog.Sampler
-		if o.BasicSampleN > 0 {
-			next = &zerolog.BasicSampler{N: o.BasicSampleN}
+		if o.SamplerBasicN > 0 {
+			next = &zerolog.BasicSampler{N: o.SamplerBasicN}
 		}
 		return &zerolog.BurstSampler{
-			Burst:       o.BurstSampleBurst,
-			Period:      o.BurstSamplePeriod,
+			Burst:       o.SamplerBurst,
+			Period:      o.SamplerBurstPeriod,
 			NextSampler: next,
 		}
 	}
-	if o.BasicSampleN > 0 {
-		return &zerolog.BasicSampler{N: o.BasicSampleN}
+	if o.SamplerBasicN > 0 {
+		return &zerolog.BasicSampler{N: o.SamplerBasicN}
 	}
 	return allowAllSampler{}
 }

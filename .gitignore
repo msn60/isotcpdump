@@ -3,6 +3,8 @@
 **/app.log
 temp
 **/tmp
+app-*/
+
 
 # Ignore all bin files
 bin/isotcp
@@ -20,3 +22,4 @@ output/*.csv
 
 # Ignore .env file
 .env
+

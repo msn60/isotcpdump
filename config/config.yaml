@@ -35,16 +35,37 @@ log:
   metadata:
     # service: "tcp"
     level: "trace"
-    path: "logs/app.log"
+    # path: "logs/app.log"
     apply_to_global: true
   console:
     enable: true
     pipe: true
-    fields_exclude: ["test"]
-  rotation:
-    size: 1024000
-    interval: "daily"
-    count: 20
+    # fields_exclude: ["test"]
+  # rotation:
+  #   size: 1024000
+  #   interval: "weekly"
+  #   count: 20
+  file: 
+    file_enable: true
+    file_path: "logs/app.log"
+    file_max_size_mb: 50
+    file_max_backups: 10
+    file_max_age_days: 14
+    file_compress: true
+  time:
+    field_format: "RFC3339Nano"
+    duration_field_unit: "ms"
+    duration_field_integer: true
+  system:
+    enable_caller: true
+    enable_pid_host: true
+  sampler:
+    enable: false
+    burst: 3 # first 3 messages print
+    burst_period: 2 # after 2 seconds, burst will be 0 and print the count of burst
+    next_every_n: 5 # after burst enabling, only 1 message prints from each 5 messages
+    basic_n: 5 # if burst 0, from every N message,only BasicN prints
+    # level: "error"
   array_sample:
     - type: "type 1"
       size: 102400 # size in KB
