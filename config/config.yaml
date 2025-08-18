@@ -2,7 +2,7 @@ app:
   version: "1.0.1"
   name: "isotcp"
   env: "development"
-  pcap_path: "files/iso8583-b.pcap" 
+  pcap_path: "files/iso8583-s.pcap" 
 
 network:
   fw_ip: "172.16.58.20"

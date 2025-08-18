@@ -13,10 +13,6 @@ import (
 	"github.com/google/gopacket/tcpassembly/tcpreader"
 )
 
-var (
-	mutex sync.Mutex
-)
-
 type IsoStreamResponse struct {
 	InputRows           [][]string
 	OutputRows          [][]string
@@ -171,7 +167,7 @@ func (h *isoStream) run() {
 		if err == io.EOF {
 			break
 		}
-		// سایر خطاها رو نادیده می‌گیریم؛ ReaderStream معمولاً با EOF تموم میشه
+
 	}
 }
 

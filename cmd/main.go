@@ -53,22 +53,24 @@ func main() {
 		os.Exit(1)
 	}
 
-	handle, err := pcap.OpenOffline(pcapPath)
-	if err != nil {
-		app.Clogger.Fatal().Err(err).Str("pcap_path", pcapPath).Msg("failed to open pcap file")
-		os.Exit(1)
-	}
-	defer handle.Close()
-	runWithStreams(app, handle, 1000)
+	stream.PrintBytes(cfg)
+
+	// handle, err := pcap.OpenOffline(pcapPath)
+	// if err != nil {
+	// 	app.Clogger.Fatal().Err(err).Str("pcap_path", pcapPath).Msg("failed to open pcap file")
+	// 	os.Exit(1)
+	// }
+	// defer handle.Close()
+	// runWithStreams(app, handle, 1000)
 }
 
 func runWithStreams(app *config.Application, handle *pcap.Handle, maxCSVRows int) {
-	// 1)
+	// 1) create packet source
 	packetSource := gopacket.NewPacketSource(handle, handle.LinkType())
 
-	// 2)
+	// 2) create aggregator & assembler
 	agg := stream.NewAggregator(maxCSVRows)
-	factory := stream.NewFactory(app.Cfg.Network.FWIP, agg) // ← فیلد IP فایروال از کانفیگ خودت
+	factory := stream.NewFactory(app.Cfg.Network.FWIP, agg)
 
 	pool := tcpassembly.NewStreamPool(factory)
 	assembler := tcpassembly.NewAssembler(pool)

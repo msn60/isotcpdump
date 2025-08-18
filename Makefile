@@ -17,7 +17,7 @@ build:
 brun: clean build
 	@$(BIN_DIR)/$(BINARY_NAME)
 
-run: clean build
+run: 
 	@$(BIN_DIR)/$(BINARY_NAME)
 
 clear-log:
